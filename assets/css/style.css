@@ -16,7 +16,7 @@ body {
 }
 
 
-main h2 {
+main h2 h3 {
     background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
     backdrop-filter: blur(6px);
     padding: 20px;
