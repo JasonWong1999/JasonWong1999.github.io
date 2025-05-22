@@ -1,0 +1,105 @@
+header {
+    background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+    backdrop-filter: blur(6px);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+body {
+    background: url("../images/bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    font-family: Arial, sans-serif;
+    color:white
+}
+
+
+main h2 h3 {
+    background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+    backdrop-filter: blur(6px);
+    padding: 20px;
+    margin-bottom: 10px auto;
+    border-radius: 10px;
+  }
+
+main p {
+    background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+    backdrop-filter: blur(6px);
+    padding: 20px;
+    margin: 10px auto;
+    border-radius: 10px;
+    line-height: 1.6;
+  }
+
+footer {
+    text-align: center;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    font-size: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+
+/* 教育背景列表样式 */
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+/* 每一项的布局，使用flexbox */
+.education-item {
+    display: flex;
+    align-items: center;  /* 垂直居中对齐图片和文本 */
+    margin-bottom: 20px; /* 每个条目之间的间距 */
+    width: 100%;  /* 确保每个教育背景项占满整个行 */
+}
+
+/* 控制图片大小 */
+.edu-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 20px; /* 给图片和文本之间增加间距 */
+    
+}
+
+/* 对教育文本进行 flex 布局 */
+.education-text {
+    display: flex;
+    justify-content: space-between;  /* 在同一行内，均匀分布内容 */
+    width: 100%;  /* 让文本内容占据剩余空间 */
+}
+
+/* 分别设置年份、学校和专业的样式 */
+.year, .university, .major {
+    font-size: 16px;
+    flex: 1;  /* 每个部分占用同样的空间 */
+    text-align: left;  /* 左对齐文本 */
+    margin-right: 15px;  /* 给每个文本项之间增加间距 */
+}
+
+
+
