@@ -135,6 +135,35 @@
       border-bottom: 2px solid var(--text);
     }
 
+    /* Hamburger menu button - hidden on desktop */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(4.5px, 4.5px);
+    }
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(4.5px, -4.5px);
+    }
+
     /* Container */
     .container {
       max-width: 900px;
@@ -570,25 +599,38 @@
         padding: 0 24px;
       }
 
-      nav {
-        padding: 0 16px;
+      .nav-toggle {
+        display: flex;
       }
 
       .nav-links {
-        gap: 0;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(250, 250, 250, 0.98);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
       }
 
-      .nav-links::-webkit-scrollbar {
-        display: none;
+      .nav-links.open {
+        display: flex;
       }
 
       .nav-link {
-        padding: 8px 10px;
-        font-size: 12px;
-        white-space: nowrap;
+        padding: 14px 24px;
+        font-size: 14px;
+        border: none;
+        border-radius: 0;
+      }
+
+      .nav-link.active {
+        border: none;
+        background: var(--bg);
+        border-left: 2px solid var(--text);
       }
 
       .hero h1 {
@@ -635,7 +677,12 @@
 
   <nav>
     <div class="nav-logo"><span>#</span> portfolio</div>
-    <ul class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a class="nav-link active" data-page="home">首页</a></li>
       <li><a class="nav-link" data-page="about">关于</a></li>
       <li><a class="nav-link" data-page="projects">项目</a></li>
@@ -843,7 +890,42 @@
   </footer>
 
   <script>
+    // Mobile menu toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
     function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+
+      // Show target page
+      document.getElementById(pageId).classList.add('active');
+
+      // Update nav links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === pageId) {
+          link.classList.add('active');
+        }
+      });
+
+      // Close mobile menu
+      navToggle.classList.remove('open');
+      navLinks.classList.remove('open');
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+
+      // Update URL hash
+      history.pushState(null, '', '#' + pageId);
+    }
       // Hide all pages
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
