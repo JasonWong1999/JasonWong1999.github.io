@@ -926,29 +926,6 @@
       // Update URL hash
       history.pushState(null, '', '#' + pageId);
     }
-      // Hide all pages
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
-
-      // Show target page
-      document.getElementById(pageId).classList.add('active');
-
-      // Update nav links
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.dataset.page === pageId) {
-          link.classList.add('active');
-        }
-      });
-
-      // Scroll to top
-      window.scrollTo(0, 0);
-
-      // Update URL hash
-      history.pushState(null, '', '#' + pageId);
-    }
-
     // Handle nav clicks
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', (e) => {
