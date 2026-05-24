@@ -1,19 +1,880 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>Jason Wong 的狗窝</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人网站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --bg-secondary: #FFFFFF;
+      --text: #1A1A1A;
+      --text-secondary: #666666;
+      --border: #E0E0E0;
+      --accent: #000000;
+      --grid-color: rgba(0, 0, 0, 0.05);
+      --font-display: 'Playfair Display', 'Noto Serif SC', serif;
+      --font-body: 'DM Sans', 'Noto Serif SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* Background Grid */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Page Container */
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding-top: 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      padding: 0 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span {
+      color: var(--text-secondary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 20px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+    }
+
+    .nav-link.active {
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--text);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* Hero Page */
+    .hero-content {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 0;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      width: fit-content;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--text);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 .highlight {
+      border-bottom: 2px solid var(--text);
+    }
+
+    .hero .tagline {
+      font-size: 20px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+    }
+
+    .hero-cta a {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-decoration: none;
+      padding: 14px 28px;
+      transition: all 0.2s ease;
+    }
+
+    .hero-cta .primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .hero-cta .primary:hover {
+      background: #333;
+    }
+
+    .hero-cta .secondary {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .hero-cta .secondary:hover {
+      border-color: var(--text);
+    }
+
+    /* About Page */
+    .about-hero {
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 64px;
+    }
+
+    .page-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .about-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 80px;
+      padding-bottom: 80px;
+    }
+
+    .about-text p {
+      margin-bottom: 28px;
+      color: var(--text-secondary);
+      font-size: 17px;
+    }
+
+    .about-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .about-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .sidebar-section {
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .sidebar-section h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-section ul {
+      list-style: none;
+    }
+
+    .sidebar-section li {
+      font-size: 15px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-section li:last-child {
+      border-bottom: none;
+    }
+
+    .avatar-block {
+      aspect-ratio: 3/4;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Projects Page */
+    .page-header {
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-top: 16px;
+      max-width: 500px;
+    }
+
+    .projects-grid {
+      display: grid;
+      gap: 32px;
+      padding-bottom: 80px;
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      padding: 32px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      transition: all 0.25s ease;
+    }
+
+    .project-card:hover {
+      border-color: var(--text);
+      box-shadow: 4px 4px 0 var(--text);
+      transform: translate(-2px, -2px);
+    }
+
+    .project-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .project-info h3 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .project-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+    }
+
+    .project-info p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .project-links a {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .project-links a:hover {
+      opacity: 0.5;
+    }
+
+    .project-thumb {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Writing Page */
+    .writing-list {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 80px;
+    }
+
+    .writing-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+
+    .writing-item:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .writing-item:hover {
+      padding-left: 16px;
+    }
+
+    .writing-content h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+
+    .writing-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .writing-arrow {
+      font-size: 20px;
+      color: var(--text-secondary);
+      transition: transform 0.2s ease;
+    }
+
+    .writing-item:hover .writing-arrow {
+      transform: translateX(6px);
+      color: var(--text);
+    }
+
+    /* Contact Page */
+    .contact-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 72px);
+      padding: 80px 0;
+    }
+
+    .contact-intro {
+      max-width: 540px;
+      margin-bottom: 64px;
+    }
+
+    .contact-intro h1 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .contact-intro p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .contact-card {
+      padding: 32px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .contact-card:hover {
+      border-color: var(--text);
+    }
+
+    .contact-card h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .contact-card a {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--text);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .contact-card a:hover {
+      opacity: 0.6;
+    }
+
+    .contact-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      z-index: 100;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 24px;
+      }
+
+      .container {
+        padding: 0 24px;
+      }
+
+      .nav-link {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-sidebar {
+        order: -1;
+      }
+
+      .avatar-block {
+        aspect-ratio: 16/9;
+      }
+
+      .project-card {
+        grid-template-columns: 1fr;
+      }
+
+      .project-thumb {
+        order: -1;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        padding: 16px 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div id="navbar"></div>
 
-  <main id="content">
-    <!-- 中间内容页会在这里加载 -->
-  </main>
+  <div class="bg-grid"></div>
 
-  <div id="footer"></div>
+  <nav>
+    <div class="nav-logo"><span>#</span> portfolio</div>
+    <ul class="nav-links">
+      <li><a class="nav-link active" data-page="home">首页</a></li>
+      <li><a class="nav-link" data-page="about">关于</a></li>
+      <li><a class="nav-link" data-page="projects">项目</a></li>
+      <li><a class="nav-link" data-page="writing">文章</a></li>
+      <li><a class="nav-link" data-page="contact">联系</a></li>
+    </ul>
+  </nav>
 
-  <script src="script.js"></script>
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">Available for collaboration</div>
+        <h1>你好，<br>我是 <span class="highlight">[名字]</span></h1>
+        <p class="tagline">雅思教师 / 独立开发者。探索语言学习与产品开发的可能性，在这里记录教学心得与代码作品。</p>
+        <div class="hero-cta">
+          <a href="#" class="primary" onclick="showPage('projects'); return false;">查看项目</a>
+          <a href="#" class="secondary" onclick="showPage('contact'); return false;">联系我</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Page -->
+  <div id="about" class="page">
+    <div class="container">
+      <div class="about-hero">
+        <div class="page-label">01 / ABOUT</div>
+        <h1>关于我</h1>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>我是一名雅思教师，同时也在探索独立开发领域。教学之余，我喜欢用代码实现想法，从工具到应用，尝试把创意变成产品。</p>
+          <p>我的教学理念是让学习变得高效且有趣，而开发让我能够用技术手段实践这个理念。两者的结合让我既能理解学习者的需求，又能动手解决实际问题。</p>
+          <p>欢迎来这里了解我的工作和项目，也可以读读我的文章。如果有任何想法或合作机会，欢迎联系我。</p>
+        </div>
+        <div class="about-sidebar">
+          <div class="avatar-block">[avatar]</div>
+          <div class="sidebar-section">
+            <h3>技能</h3>
+            <ul>
+              <li>雅思教学</li>
+              <li>前端开发</li>
+              <li>产品设计</li>
+              <li>独立开发</li>
+            </ul>
+          </div>
+          <div class="sidebar-section">
+            <h3>关注领域</h3>
+            <ul>
+              <li>教育科技</li>
+              <li>语言学习</li>
+              <li>效率工具</li>
+              <li>数字产品</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Page -->
+  <div id="projects" class="page">
+    <div class="container">
+      <div class="page-header">
+        <div class="page-label">02 / PROJECTS</div>
+        <h1>项目作品</h1>
+        <p>教学工具与独立开发项目的实践</p>
+      </div>
+      <div class="projects-grid">
+
+        <article class="project-card">
+          <div class="project-info">
+            <div class="project-number">01</div>
+            <h3>雅思词汇小程序</h3>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">小程序</span>
+            </div>
+            <p>帮助学生利用碎片时间记忆雅思核心词汇，支持听读写三位一体复习。</p>
+            <div class="project-links">
+              <a href="#">访问 →</a>
+              <a href="#">GitHub →</a>
+            </div>
+          </div>
+          <div class="project-thumb">[screenshot]</div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-info">
+            <div class="project-number">02</div>
+            <h3>写作批改工具</h3>
+            <div class="project-tags">
+              <span class="project-tag">Python</span>
+              <span class="project-tag">GPT API</span>
+              <span class="project-tag">Web</span>
+            </div>
+            <p>基于 GPT 的雅思写作自动批改工具，提供详细的评分与改进建议。</p>
+            <div class="project-links">
+              <a href="#">访问 →</a>
+              <a href="#">GitHub →</a>
+            </div>
+          </div>
+          <div class="project-thumb">[screenshot]</div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-info">
+            <div class="project-number">03</div>
+            <h3>单词卡片应用</h3>
+            <div class="project-tags">
+              <span class="project-tag">Flutter</span>
+              <span class="project-tag">Firebase</span>
+              <span class="project-tag">移动端</span>
+            </div>
+            <p>跨平台单词复习应用，支持间隔重复算法与学习数据统计。</p>
+            <div class="project-links">
+              <a href="#">访问 →</a>
+              <a href="#">GitHub →</a>
+            </div>
+          </div>
+          <div class="project-thumb">[screenshot]</div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Writing Page -->
+  <div id="writing" class="page">
+    <div class="container">
+      <div class="page-header">
+        <div class="page-label">03 / WRITING</div>
+        <h1>文章</h1>
+      </div>
+      <div class="writing-list">
+
+        <a href="#" class="writing-item">
+          <div class="writing-content">
+            <h3>雅思阅读提速的三个技巧</h3>
+            <div class="writing-meta">2026.04 · 教学</div>
+          </div>
+          <div class="writing-arrow">→</div>
+        </a>
+
+        <a href="#" class="writing-item">
+          <div class="writing-content">
+            <h3>从零开始做独立开发：我的第一个付费产品</h3>
+            <div class="writing-meta">2026.03 · 开发</div>
+          </div>
+          <div class="writing-arrow">→</div>
+        </a>
+
+        <a href="#" class="writing-item">
+          <div class="writing-content">
+            <h3>如何用技术提升教学效率</h3>
+            <div class="writing-meta">2026.01 · 思考</div>
+          </div>
+          <div class="writing-arrow">→</div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Page -->
+  <div id="contact" class="page">
+    <div class="container">
+      <div class="contact-page">
+        <div class="contact-intro">
+          <div class="page-label">04 / CONTACT</div>
+          <h1>期待交流</h1>
+          <p>无论是雅思学习、独立开发，还是合作机会，都欢迎联系我。</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>邮件</h3>
+            <a href="mailto:hello@example.com">hello@example.com</a>
+            <p>一般会在24小时内回复</p>
+          </div>
+          <div class="contact-card">
+            <h3>社交</h3>
+            <a href="#">小红书</a>
+            <p>分享教学与开发日常</p>
+          </div>
+          <div class="contact-card">
+            <h3>代码</h3>
+            <a href="#">GitHub</a>
+            <p>查看我的开源项目</p>
+          </div>
+          <div class="contact-card">
+            <h3>公众号</h3>
+            <a href="#">微信公众号</a>
+            <p>文章与资源分享</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026</span>
+    <span>Built with code</span>
+  </footer>
+
+  <script>
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+
+      // Show target page
+      document.getElementById(pageId).classList.add('active');
+
+      // Update nav links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === pageId) {
+          link.classList.add('active');
+        }
+      });
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+
+      // Update URL hash
+      history.pushState(null, '', '#' + pageId);
+    }
+
+    // Handle nav clicks
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPage(link.dataset.page);
+      });
+    });
+
+    // Handle initial hash
+    if (window.location.hash) {
+      const pageId = window.location.hash.slice(1);
+      if (document.getElementById(pageId)) {
+        showPage(pageId);
+      }
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => {
+      const pageId = window.location.hash.slice(1) || 'home';
+      if (document.getElementById(pageId)) {
+        showPage(pageId);
+      }
+    });
+  </script>
+
 </body>
 </html>
